@@ -18,7 +18,7 @@ data "aws_iam_policy_document" "aws_load_balancer_controller_assume_role_policy"
 }
 
 resource "aws_iam_policy" "aws_load_balancer_controller" {
-  name = "AWSLoadBalancerController"
+  name   = "AWSLoadBalancerController"
   policy = file("${path.module}/alb-controller-iam-policy.json")
 }
 
