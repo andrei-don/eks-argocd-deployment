@@ -4,16 +4,16 @@ resource "aws_eks_cluster" "eks" {
   role_arn = aws_iam_role.eks.arn
 
   vpc_config {
-    subnet_ids = concat(aws_subnet.private[*].id, aws_subnet.public[*].id)
+    subnet_ids              = concat(aws_subnet.private[*].id, aws_subnet.public[*].id)
     endpoint_private_access = true
-    endpoint_public_access = true
+    endpoint_public_access  = true
   }
 
   depends_on = [aws_iam_role_policy_attachment.eks]
 
   tags = merge(local.tags,
-  {
-     Name = "${local.tags["project_name"]}-cluster"
+    {
+      Name = "${local.tags["project_name"]}-cluster"
   })
 }
 
@@ -25,7 +25,7 @@ resource "aws_eks_node_group" "private-nodes" {
   subnet_ids = aws_subnet.private[*].id
 
   capacity_type  = "SPOT"
-  instance_types = ["t3.small"]
+  instance_types = ["t2.small"]
 
   scaling_config {
     desired_size = 1
@@ -47,8 +47,8 @@ resource "aws_eks_node_group" "private-nodes" {
     aws_iam_role_policy_attachment.nodes-AmazonEC2ContainerRegistryReadOnly,
   ]
   tags = merge(local.tags,
-  {
-     Name = "${local.tags["project_name"]}-cluster-workers"
+    {
+      Name = "${local.tags["project_name"]}-cluster-workers"
   })
 
 }

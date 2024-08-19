@@ -22,7 +22,7 @@ resource "helm_release" "aws-load-balancer-controller" {
   }
 
   set {
-    name = "serviceAccount.create"
+    name  = "serviceAccount.create"
     value = "false"
   }
 
@@ -38,7 +38,7 @@ resource "helm_release" "aws-load-balancer-controller" {
   }
 
   set {
-    name = "vpcId"
+    name  = "vpcId"
     value = aws_vpc.main.id
   }
 
@@ -47,4 +47,50 @@ resource "helm_release" "aws-load-balancer-controller" {
     aws_iam_role_policy_attachment.aws_load_balancer_controller_attach,
     kubernetes_service_account.aws_load_balancer_controller
   ]
+}
+
+resource "helm_release" "argo_cd" {
+  name             = "argo_cd"
+  namespace        = "argo"
+  create_namespace = true
+
+  chart   = "https://argoproj.github.io/argo-helm"
+  version = "7.4.4"
+  values  = [file("${path.module}/argo_values.yaml")]
+}
+
+resource "helm_release" "argo_ingress" {
+  name             = "argo"
+  namespace        = "argo"
+  create_namespace = true
+  chart            = "${path.module}/helm/argo-ingress"
+
+  set {
+    name  = "certArn"
+    value = aws_acm_certificate.main.arn
+  }
+  set {
+    name  = "namespace"
+    value = "argo"
+  }
+  depends_on = [helm_release.argo_cd]
+}
+
+resource "helm_release" "game_2048" {
+  name             = "game-2048"
+  namespace        = "game-2048"
+  create_namespace = true
+
+  chart = "${path.module}/helm/2048-game"
+
+  set {
+    name  = "certArn"
+    value = aws_acm_certificate.main.arn
+  }
+
+  set {
+    name  = "namespace"
+    value = "game-2048"
+  }
+  depends_on = [helm_release.aws-load-balancer-controller]
 }

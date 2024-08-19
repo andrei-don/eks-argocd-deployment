@@ -1,0 +1,5 @@
+namespace: game-2048
+deployment:
+  replicas: 3
+targetType: ip
+certArn: to-be-replaced
