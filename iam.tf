@@ -1,6 +1,6 @@
 
 resource "aws_iam_role" "eks" {
-  name = "${local.tags["project_name"]}-role"
+  name = "${local.tags["project_name"]}-role-eks"
 
   assume_role_policy = <<POLICY
 {
