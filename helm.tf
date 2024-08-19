@@ -50,7 +50,7 @@ resource "helm_release" "aws-load-balancer-controller" {
 }
 
 resource "helm_release" "argo_cd" {
-  name             = "argo_cd"
+  name             = "argo-cd"
   namespace        = "argo"
   create_namespace = true
 
@@ -61,7 +61,7 @@ resource "helm_release" "argo_cd" {
 }
 
 resource "helm_release" "argo_ingress" {
-  name             = "argo"
+  name             = "argo-ingress"
   namespace        = "argo"
   create_namespace = true
   chart            = "${path.module}/helm/argo-ingress"
