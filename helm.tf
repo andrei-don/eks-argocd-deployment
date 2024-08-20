@@ -58,6 +58,9 @@ resource "helm_release" "argo_cd" {
   repository = "https://argoproj.github.io/argo-helm"
   version    = "7.4.4"
   values     = [file("${path.module}/argo_values.yaml")]
+  depends_on = [
+    aws_eks_node_group.private-nodes
+  ]
 }
 
 resource "helm_release" "argo_ingress" {
@@ -74,7 +77,8 @@ resource "helm_release" "argo_ingress" {
     name  = "namespace"
     value = "argo"
   }
-  depends_on = [helm_release.argo_cd]
+  depends_on = [helm_release.argo_cd,
+  helm_release.aws-load-balancer-controller]
 }
 
 resource "helm_release" "game_2048" {
