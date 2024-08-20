@@ -37,3 +37,8 @@ variable "domain_name" {
   description = "The name of the domain for which you are creating the certificate"
   type        = string
 }
+
+variable "admin_arn" {
+  description = "The ARN of the admin user that you want to grant access to the cluster."
+  type = string
+}

@@ -2,7 +2,6 @@
 resource "aws_eks_cluster" "eks" {
   name     = "${local.tags["project_name"]}-cluster"
   role_arn = aws_iam_role.eks.arn
-
   vpc_config {
     subnet_ids              = concat(aws_subnet.private[*].id, aws_subnet.public[*].id)
     endpoint_private_access = true
@@ -28,8 +27,8 @@ resource "aws_eks_node_group" "private-nodes" {
   instance_types = ["t2.small"]
 
   scaling_config {
-    desired_size = 1
-    max_size     = 2
+    desired_size = 3
+    max_size     = 3
     min_size     = 0
   }
 
@@ -51,4 +50,11 @@ resource "aws_eks_node_group" "private-nodes" {
       Name = "${local.tags["project_name"]}-cluster-workers"
   })
 
+}
+
+resource "aws_eks_access_entry" "admin" {
+  cluster_name      = aws_eks_cluster.eks.name
+  principal_arn     = var.admin_arn
+  kubernetes_groups = ["system:masters"]
+  type              = "STANDARD"
 }
