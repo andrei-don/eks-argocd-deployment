@@ -40,5 +40,5 @@ variable "domain_name" {
 
 variable "admin_arn" {
   description = "The ARN of the admin user that you want to grant access to the cluster."
-  type = string
+  type        = string
 }

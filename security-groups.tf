@@ -30,8 +30,8 @@ resource "aws_vpc_security_group_egress_rule" "instances_egress_all_ipv4" {
 
   cidr_ipv4   = "0.0.0.0/0"
   ip_protocol = "tcp"
-  from_port = 443
-  to_port = 443
+  from_port   = 443
+  to_port     = 443
 }
 
 resource "aws_vpc_security_group_egress_rule" "instances_egress_all_ipv6" {
@@ -39,8 +39,8 @@ resource "aws_vpc_security_group_egress_rule" "instances_egress_all_ipv6" {
 
   cidr_ipv6   = "::/0"
   ip_protocol = "tcp"
-  from_port = 443
-  to_port = 443
+  from_port   = 443
+  to_port     = 443
 }
 
 resource "aws_vpc_security_group_ingress_rule" "endpoints_ingress" {
