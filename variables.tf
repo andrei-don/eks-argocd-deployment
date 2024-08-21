@@ -37,3 +37,8 @@ variable "domain_name" {
   description = "The name of the domain for which you are creating the certificate"
   type        = string
 }
+
+variable "project_name" {
+  description = "The name of your project. It gets appended to all resources' names."
+  type        = string
+}
