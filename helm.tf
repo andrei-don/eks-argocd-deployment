@@ -1,3 +1,4 @@
+
 resource "helm_release" "aws-load-balancer-controller" {
   name = "aws-load-balancer-controller"
 
@@ -31,7 +32,6 @@ resource "helm_release" "aws-load-balancer-controller" {
     value = aws_iam_role.aws_load_balancer_controller.arn
   }
 
-
   set {
     name  = "region"
     value = var.region
@@ -59,7 +59,8 @@ resource "helm_release" "argo_cd" {
   version    = "7.4.4"
   values     = [file("${path.module}/argo_values.yaml")]
   depends_on = [
-    aws_eks_node_group.private-nodes
+    aws_eks_node_group.private-nodes,
+    helm_release.aws-load-balancer-controller
   ]
 }
 
@@ -77,25 +78,7 @@ resource "helm_release" "argo_ingress" {
     name  = "namespace"
     value = "argo"
   }
-  depends_on = [helm_release.argo_cd,
-  helm_release.aws-load-balancer-controller]
-}
-
-resource "helm_release" "game_2048" {
-  name             = "game-2048"
-  namespace        = "game-2048"
-  create_namespace = true
-
-  chart = "${path.module}/helm/2048-game"
-
-  set {
-    name  = "certArn"
-    value = aws_acm_certificate.main.arn
-  }
-
-  set {
-    name  = "namespace"
-    value = "game-2048"
-  }
-  depends_on = [helm_release.aws-load-balancer-controller]
+  depends_on = [
+    aws_eks_node_group.private-nodes,
+  helm_release.argo_cd]
 }

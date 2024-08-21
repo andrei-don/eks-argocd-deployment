@@ -6,8 +6,12 @@ resource "aws_eks_cluster" "eks" {
     subnet_ids              = concat(aws_subnet.private[*].id, aws_subnet.public[*].id)
     endpoint_private_access = true
     endpoint_public_access  = true
+    security_group_ids      = [aws_security_group.eks.id]
   }
-
+  access_config {
+    authentication_mode                         = "API_AND_CONFIG_MAP"
+    bootstrap_cluster_creator_admin_permissions = true
+  }
   depends_on = [aws_iam_role_policy_attachment.eks]
 
   tags = merge(local.tags,
@@ -53,8 +57,15 @@ resource "aws_eks_node_group" "private-nodes" {
 }
 
 resource "aws_eks_access_entry" "admin" {
-  cluster_name      = aws_eks_cluster.eks.name
-  principal_arn     = var.admin_arn
-  kubernetes_groups = ["system:masters"]
-  type              = "STANDARD"
+  cluster_name  = aws_eks_cluster.eks.name
+  principal_arn = "arn:aws:iam::471112989739:role/admin-access"
+}
+
+resource "aws_eks_access_policy_association" "admin" {
+  cluster_name  = aws_eks_cluster.eks.name
+  policy_arn    = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
+  principal_arn = "arn:aws:iam::471112989739:role/admin-access"
+  access_scope {
+    type = "cluster"
+  }
 }
